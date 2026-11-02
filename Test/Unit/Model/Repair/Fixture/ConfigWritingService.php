@@ -1,6 +1,7 @@
 <?php
 /**
- * Copyright © Orangecat. All rights reserved.
+ * Copyright © Orangecat
+ * SPDX-License-Identifier: MIT
  */
 declare(strict_types=1);
 
