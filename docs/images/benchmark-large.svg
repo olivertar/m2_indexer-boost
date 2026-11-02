@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 308" width="760" height="308" font-family="-apple-system,Segoe UI,Helvetica,Arial,sans-serif" role="img" aria-labelledby="t d">
+<title id="t">Full reindex time, 502 040 products: core vs Indexer Boost</title>
+<desc id="d">catalog_category_product 1796 s core, 461 s Indexer Boost; catalog_product_attribute 664 s core, 268 s Indexer Boost; catalog_product_price 1024 s core (median), 790 s Indexer Boost. Same index output in every case.</desc>
+<style>
+.bg{fill:#fcfcfb}.t1{fill:#0b0b0b}.t2{fill:#52514e}.t3{fill:#7a7975}.grid{stroke:#e4e3df;stroke-width:1}.base{stroke:#bfbdb6;stroke-width:1}
+.core{fill:#2a78d6}.boost{fill:#eb6834}
+@media (prefers-color-scheme: dark){.bg{fill:#1a1a19}.t1{fill:#f0efec}.t2{fill:#c3c2b7}.t3{fill:#9a998f}.grid{stroke:#2e2e2c}.base{stroke:#55544f}.core{fill:#3987e5}.boost{fill:#d95926}}
+</style>
+<rect class="bg" width="760" height="308" rx="8"/>
+<text class="t1" x="20" y="30" font-size="16" font-weight="600">Full reindex time on 502 040 products (seconds, lower is better)</text>
+<text class="t2" x="20" y="50" font-size="12">Magento 2.4.9, PHP 8.5, MariaDB 10.11, one process. Same index output (snapshot MATCH) in every case.</text>
+<rect class="core" x="210" y="60" width="10" height="10" rx="2"/><text class="t2" x="226" y="69" font-size="12">Magento core</text>
+<rect class="boost" x="330" y="60" width="10" height="10" rx="2"/><text class="t2" x="346" y="69" font-size="12">Indexer Boost</text>
+<line class="grid" x1="210.0" x2="210.0" y1="78" y2="254"/>
+<text class="t3" x="210.0" y="272" font-size="11" text-anchor="middle">0</text>
+<line class="grid" x1="363.33333333333337" x2="363.33333333333337" y1="78" y2="254"/>
+<text class="t3" x="363.33333333333337" y="272" font-size="11" text-anchor="middle">600</text>
+<line class="grid" x1="516.6666666666667" x2="516.6666666666667" y1="78" y2="254"/>
+<text class="t3" x="516.6666666666667" y="272" font-size="11" text-anchor="middle">1 200</text>
+<line class="grid" x1="670.0" x2="670.0" y1="78" y2="254"/>
+<text class="t3" x="670.0" y="272" font-size="11" text-anchor="middle">1 800</text>
+<text class="t1" x="198" y="104" font-size="12.5" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,monospace">catalog_category_product</text>
+<path class="core" d="M210,86 H664.9777777777778 a4,4 0 0 1 4,4 V98 a4,4 0 0 1 -4,4 H210 Z"><title>1,796 s</title></path>
+<path class="boost" d="M210,104 H323.81111111111113 a4,4 0 0 1 4,4 V116 a4,4 0 0 1 -4,4 H210 Z"><title>461 s</title></path>
+<text class="t2" x="674.9777777777778" y="98" font-size="11.5">1 796 s</text>
+<text class="t1" x="333.81111111111113" y="116" font-size="11.5" font-weight="600">461 s (-74%)</text>
+<text class="t1" x="198" y="166" font-size="12.5" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,monospace">catalog_product_attribute</text>
+<path class="core" d="M210,148 H375.68888888888887 a4,4 0 0 1 4,4 V160 a4,4 0 0 1 -4,4 H210 Z"><title>664 s</title></path>
+<path class="boost" d="M210,166 H274.4888888888889 a4,4 0 0 1 4,4 V178 a4,4 0 0 1 -4,4 H210 Z"><title>268 s</title></path>
+<text class="t2" x="385.68888888888887" y="160" font-size="11.5">664 s</text>
+<text class="t1" x="284.4888888888889" y="178" font-size="11.5" font-weight="600">268 s (-60%)</text>
+<text class="t1" x="198" y="228" font-size="12.5" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,monospace">catalog_product_price</text>
+<path class="core" d="M210,210 H467.68888888888887 a4,4 0 0 1 4,4 V222 a4,4 0 0 1 -4,4 H210 Z"><title>1,024 s</title></path>
+<path class="boost" d="M210,228 H407.8888888888889 a4,4 0 0 1 4,4 V240 a4,4 0 0 1 -4,4 H210 Z"><title>790 s</title></path>
+<text class="t2" x="477.68888888888887" y="222" font-size="11.5">1 024 s</text>
+<text class="t1" x="417.8888888888889" y="240" font-size="11.5" font-weight="600">790 s (-23%)</text>
+<line class="base" x1="210" x2="210" y1="78" y2="254"/>
+</svg>

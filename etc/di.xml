@@ -1,0 +1,341 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Orangecat. All rights reserved.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="indexer_boost_doctor" xsi:type="object">Orangecat\IndexerBoost\Console\Command\DoctorCommand</item>
+                <item name="indexer_boost_toggle" xsi:type="object">Orangecat\IndexerBoost\Console\Command\ToggleCommand</item>
+            </argument>
+        </arguments>
+    </type>
+    <!-- Indexers with an Indexer Boost implementation (SPEC 6), added as they are rewritten -->
+    <type name="Orangecat\IndexerBoost\Model\Indexer\RewrittenIndexers">
+        <arguments>
+            <argument name="indexerIds" xsi:type="array">
+                <item name="catalog_category_product" xsi:type="string">catalog_category_product</item>
+                <item name="catalog_product_attribute" xsi:type="string">catalog_product_attribute</item>
+                <item name="catalog_product_price" xsi:type="string">catalog_product_price</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Catalog\Model\Indexer\Product\Eav\Action\Full">
+        <plugin name="orangecat_indexer_boost_product_eav_full"
+                type="Orangecat\IndexerBoost\Plugin\Indexer\ProductEavFullPlugin"/>
+    </type>
+    <type name="Magento\Catalog\Model\Indexer\Product\Price\Action\Full">
+        <plugin name="orangecat_indexer_boost_price_full"
+                type="Orangecat\IndexerBoost\Plugin\Indexer\PriceFullPlugin"/>
+    </type>
+    <type name="Magento\Catalog\Model\ResourceModel\Product\Indexer\Price\Query\BaseFinalPrice">
+        <plugin name="orangecat_indexer_boost_price_query"
+                type="Orangecat\IndexerBoost\Plugin\Indexer\PriceQueryPlugin"/>
+    </type>
+    <type name="Magento\Catalog\Model\Indexer\Category\Product\Action\Full">
+        <plugin name="orangecat_indexer_boost_category_product_full"
+                type="Orangecat\IndexerBoost\Plugin\Indexer\CategoryProductFullPlugin"/>
+    </type>
+    <!-- Same arguments as the core action in Magento_Catalog etc/di.xml -->
+    <type name="Orangecat\IndexerBoost\Model\Indexer\CategoryProduct\Action\Full">
+        <arguments>
+            <argument name="batchRowsCount" xsi:type="number">100000</argument>
+            <argument name="batchSizeManagement" xsi:type="object">Magento\Catalog\Model\Indexer\CategoryProductBatchSize</argument>
+        </arguments>
+    </type>
+    <type name="Orangecat\IndexerBoost\Console\Command\DoctorCommand">
+        <arguments>
+            <argument name="doctor" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Doctor\Proxy</argument>
+            <argument name="repairer" xsi:type="object">Orangecat\IndexerBoost\Model\Repair\Repairer\Proxy</argument>
+            <argument name="formatters" xsi:type="array">
+                <item name="table" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Report\TableFormatter</item>
+                <item name="json" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Report\JsonFormatter</item>
+                <item name="markdown" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Report\MarkdownFormatter</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Orangecat\IndexerBoost\Model\Doctor\Doctor">
+        <arguments>
+            <argument name="checks" xsi:type="array">
+                <item name="INDEXER_MODE" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\IndexerModeCheck</item>
+                <item name="INDEXER_STATE" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\IndexerStateCheck</item>
+                <item name="INDEXER_STUCK" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\IndexerStuckCheck</item>
+                <item name="APPLICATION_LOCK" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\ApplicationLockCheck</item>
+                <item name="PARALLEL_THREADS" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\ParallelThreadsCheck</item>
+                <item name="BATCH_SIZE" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\BatchSizeCheck</item>
+                <item name="PRICE_DIMENSIONS" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\PriceDimensionsCheck</item>
+                <item name="DATA_EXPORTERS" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\DataExportersCheck</item>
+                <item name="CATALOG_RULE_CRON" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\CatalogRuleCronCheck</item>
+                <item name="MVIEW_BACKLOG" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\MviewBacklogCheck</item>
+                <item name="CRON_INDEXER" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\CronIndexerCheck</item>
+                <item name="MYSQL_VARS" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\MysqlVarsCheck</item>
+                <item name="DB_SERVER_VERSION" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\DbServerVersionCheck</item>
+                <item name="MARIADB_OPTIMIZER" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\MariaDbOptimizerCheck</item>
+                <item name="TABLE_STATS" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\TableStatsCheck</item>
+                <item name="CUSTOMER_GROUP_WEBSITES" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\CustomerGroupWebsitesCheck</item>
+                <item name="CATALOG_RULES" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\CatalogRulesCheck</item>
+                <item name="ATTRIBUTE_FLAGS" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\AttributeFlagsCheck</item>
+                <item name="EAV_INDEXER" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\EavIndexerCheck</item>
+                <item name="EAV_REDUNDANT_STORE_VALUES" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\EavRedundantStoreValuesCheck</item>
+                <item name="EAV_ORPHANS" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\EavOrphansCheck</item>
+                <item name="REINDEX_REGRESSION" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\ReindexRegressionCheck</item>
+                <item name="REINDEX_CHURN" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\ReindexChurnCheck</item>
+                <item name="CATALOG_SIZE" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\CatalogSizeCheck</item>
+                <item name="BOOST_STATUS" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\BoostStatusCheck</item>
+                <item name="BOOST_COMPATIBILITY" xsi:type="object">Orangecat\IndexerBoost\Model\Doctor\Check\BoostCompatibilityCheck</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Orangecat\IndexerBoost\Model\Doctor\Check\BoostCompatibilityCheck">
+        <arguments>
+            <argument name="interceptedMethods" xsi:type="array">
+                <item name="Magento\Catalog\Model\Indexer\Category\Product\Action\Full" xsi:type="string">execute</item>
+                <item name="Magento\Catalog\Model\Indexer\Product\Eav\Action\Full" xsi:type="string">execute</item>
+                <item name="Magento\Catalog\Model\Indexer\Product\Price\Action\Full" xsi:type="string">execute</item>
+                <item name="Magento\Catalog\Model\ResourceModel\Product\Indexer\Price\Query\BaseFinalPrice" xsi:type="string">getQuery</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Orangecat\IndexerBoost\Model\Doctor\Check\IndexerModeCheck">
+        <arguments>
+            <!-- Below this product count, realtime indexers are reported as info instead of warn -->
+            <argument name="warnFromProducts" xsi:type="number">5000</argument>
+            <!-- Indexer ids that must stay in "Update on Save" in this installation -->
+            <argument name="excludedIndexers" xsi:type="array"/>
+            <!-- Realtime indexers the core import reindexes per batch (Import\Product::reindexProducts, StockProcessor) -->
+            <argument name="importReindexed" xsi:type="array">
+                <item name="catalog_product_category" xsi:type="string">catalog_product_category</item>
+                <item name="catalog_product_price" xsi:type="string">catalog_product_price</item>
+                <item name="cataloginventory_stock" xsi:type="string">cataloginventory_stock</item>
+            </argument>
+            <!-- Realtime indexers the core import invalidates (afterImportSource plugins, import.xml relatedIndexers) -->
+            <argument name="importInvalidated" xsi:type="array">
+                <item name="catalog_product_attribute" xsi:type="string">catalog_product_attribute</item>
+                <item name="catalogrule_rule" xsi:type="string">catalogrule_rule</item>
+                <item name="catalog_product_flat" xsi:type="string">catalog_product_flat</item>
+                <item name="customer_grid" xsi:type="string">customer_grid</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Orangecat\IndexerBoost\Model\Doctor\Check\ParallelThreadsCheck">
+        <arguments>
+            <argument name="warnFromProducts" xsi:type="number">5000</argument>
+            <!-- Read exactly as Magento\Indexer\Model\ProcessManager does -->
+            <argument name="threadsCount" xsi:type="init_parameter">Magento\Indexer\Model\ProcessManager::THREADS_COUNT</argument>
+        </arguments>
+    </type>
+    <type name="Orangecat\IndexerBoost\Model\Doctor\Check\PriceDimensionsCheck">
+        <arguments>
+            <argument name="evaluateFromProducts" xsi:type="number">50000</argument>
+            <argument name="maxWebsitesWithoutDimensions" xsi:type="number">1</argument>
+            <argument name="maxCustomerGroupsWithoutDimensions" xsi:type="number">3</argument>
+        </arguments>
+    </type>
+    <type name="Orangecat\IndexerBoost\Model\Doctor\Check\CatalogRuleCronCheck">
+        <arguments>
+            <argument name="warnFromProducts" xsi:type="number">5000</argument>
+        </arguments>
+    </type>
+    <type name="Orangecat\IndexerBoost\Model\Doctor\Check\MviewBacklogCheck">
+        <arguments>
+            <argument name="warnPendingEntries" xsi:type="number">10000</argument>
+            <argument name="largeChangelogRows" xsi:type="number">1000000</argument>
+        </arguments>
+    </type>
+    <type name="Orangecat\IndexerBoost\Model\Doctor\Check\CronIndexerCheck">
+        <arguments>
+            <argument name="maxMinutesSinceSuccess" xsi:type="number">15</argument>
+            <argument name="jobs" xsi:type="array">
+                <item name="update_views" xsi:type="string">indexer_update_all_views</item>
+                <item name="reindex_invalid" xsi:type="string">indexer_reindex_all_invalid</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Orangecat\IndexerBoost\Model\Doctor\Check\DbServerVersionCheck">
+        <arguments>
+            <!-- Supported database series per Magento release (Adobe system requirements) -->
+            <argument name="supportedSeries" xsi:type="array">
+                <item name="2.4.6" xsi:type="array">
+                    <item name="mysql" xsi:type="array"><item name="0" xsi:type="string">8.0</item></item>
+                    <item name="mariadb" xsi:type="array"><item name="0" xsi:type="string">10.6</item></item>
+                </item>
+                <item name="2.4.7" xsi:type="array">
+                    <item name="mysql" xsi:type="array"><item name="0" xsi:type="string">8.0</item></item>
+                    <item name="mariadb" xsi:type="array"><item name="0" xsi:type="string">10.6</item></item>
+                </item>
+                <item name="2.4.8" xsi:type="array">
+                    <item name="mysql" xsi:type="array"><item name="0" xsi:type="string">8.4</item></item>
+                    <item name="mariadb" xsi:type="array"><item name="0" xsi:type="string">11.4</item></item>
+                </item>
+                <item name="2.4.9" xsi:type="array">
+                    <item name="mysql" xsi:type="array"><item name="0" xsi:type="string">8.4</item></item>
+                    <item name="mariadb" xsi:type="array"><item name="0" xsi:type="string">11.4</item></item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Orangecat\IndexerBoost\Model\Doctor\Check\TableStatsCheck">
+        <arguments>
+            <argument name="tablePatterns" xsi:type="array">
+                <item name="product_eav" xsi:type="string">catalog_product_entity%</item>
+                <item name="product_index" xsi:type="string">catalog_product_index%</item>
+                <item name="category_product" xsi:type="string">catalog_category_product%</item>
+                <item name="catalogrule" xsi:type="string">catalogrule%</item>
+                <item name="stock" xsi:type="string">cataloginventory_stock%</item>
+                <item name="inventory" xsi:type="string">inventory_stock%</item>
+            </argument>
+            <argument name="limit" xsi:type="number">10</argument>
+            <argument name="largeTableMb" xsi:type="number">100</argument>
+            <argument name="staleAfterDays" xsi:type="number">30</argument>
+        </arguments>
+    </type>
+    <type name="Orangecat\IndexerBoost\Model\Doctor\Check\EavIndexerCheck">
+        <arguments>
+            <argument name="roots" xsi:type="array">
+                <item name="vendor" xsi:type="string">vendor</item>
+                <item name="app_code" xsi:type="string">app/code</item>
+            </argument>
+            <argument name="needles" xsi:type="array">
+                <item name="table" xsi:type="string">catalog_product_index_eav</item>
+                <item name="layer_attribute_resource" xsi:type="string">Magento\Catalog\Model\ResourceModel\Layer\Filter\Attribute</item>
+                <item name="layer_decimal_resource" xsi:type="string">Magento\Catalog\Model\ResourceModel\Layer\Filter\Decimal</item>
+                <item name="layer_attribute_filter" xsi:type="string">Magento\Catalog\Model\Layer\Filter\Attribute</item>
+                <item name="layer_decimal_filter" xsi:type="string">Magento\Catalog\Model\Layer\Filter\Decimal</item>
+            </argument>
+            <argument name="excludedPaths" xsi:type="array">
+                <item name="tests" xsi:type="string">/Test/</item>
+                <item name="dev_tests" xsi:type="string">dev/tests/</item>
+                <item name="magento_catalog_eav_index_resources" xsi:type="string">vendor/magento/module-catalog/Model/ResourceModel/Product/Indexer/Eav/</item>
+                <item name="magento_catalog_eav_indexer" xsi:type="string">vendor/magento/module-catalog/Model/Indexer/Product/Eav/</item>
+                <item name="magento_catalog_db_schema" xsi:type="string">vendor/magento/module-catalog/etc/db_schema.xml</item>
+                <item name="magento_catalog_legacy_layer_resources" xsi:type="string">vendor/magento/module-catalog/Model/ResourceModel/Layer/Filter/</item>
+                <item name="magento_catalog_legacy_layer_models" xsi:type="string">vendor/magento/module-catalog/Model/Layer/</item>
+                <item name="magento_catalog_search_unused_decimal_resource" xsi:type="string">vendor/magento/module-catalog-search/Model/Layer/Filter/Decimal.php</item>
+                <item name="magento_swatches_unused_layer_resource" xsi:type="string">vendor/magento/module-swatches/Block/LayeredNavigation/RenderLayered.php</item>
+                <item name="mage-os_catalog_eav_index_resources" xsi:type="string">vendor/mage-os/module-catalog/Model/ResourceModel/Product/Indexer/Eav/</item>
+                <item name="mage-os_catalog_eav_indexer" xsi:type="string">vendor/mage-os/module-catalog/Model/Indexer/Product/Eav/</item>
+                <item name="mage-os_catalog_db_schema" xsi:type="string">vendor/mage-os/module-catalog/etc/db_schema.xml</item>
+                <item name="mage-os_catalog_legacy_layer_resources" xsi:type="string">vendor/mage-os/module-catalog/Model/ResourceModel/Layer/Filter/</item>
+                <item name="mage-os_catalog_legacy_layer_models" xsi:type="string">vendor/mage-os/module-catalog/Model/Layer/</item>
+                <item name="mage-os_catalog_search_unused_decimal_resource" xsi:type="string">vendor/mage-os/module-catalog-search/Model/Layer/Filter/Decimal.php</item>
+                <item name="mage-os_swatches_unused_layer_resource" xsi:type="string">vendor/mage-os/module-swatches/Block/LayeredNavigation/RenderLayered.php</item>
+                <item name="self" xsi:type="string">app/code/Orangecat/IndexerBoost/</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Orangecat\IndexerBoost\Model\Doctor\Check\EavRedundantStoreValuesCheck">
+        <arguments>
+            <argument name="rangeSize" xsi:type="number">10000</argument>
+            <argument name="warnRows" xsi:type="number">100000</argument>
+        </arguments>
+    </type>
+    <type name="Orangecat\IndexerBoost\Model\Doctor\Check\EavOrphansCheck">
+        <arguments>
+            <argument name="rangeSize" xsi:type="number">10000</argument>
+        </arguments>
+    </type>
+    <type name="Orangecat\IndexerBoost\Model\Doctor\Check\CatalogRulesCheck">
+        <arguments>
+            <argument name="maxConditionsPerRule" xsi:type="number">10</argument>
+        </arguments>
+    </type>
+    <type name="Orangecat\IndexerBoost\Model\Doctor\Check\IndexerStateCheck">
+        <arguments>
+            <argument name="workingWarnAfterMinutes" xsi:type="number">120</argument>
+        </arguments>
+    </type>
+    <type name="Orangecat\IndexerBoost\Model\Doctor\Check\ReindexChurnCheck">
+        <arguments>
+            <argument name="windowHours" xsi:type="number">24</argument>
+            <!-- warn when one indexer runs this many full reindexes or more in the window -->
+            <argument name="maxFullRuns" xsi:type="number">3</argument>
+            <argument name="cronJobs" xsi:type="array">
+                <item name="update_views" xsi:type="string">indexer_update_all_views</item>
+                <item name="reindex_invalid" xsi:type="string">indexer_reindex_all_invalid</item>
+            </argument>
+            <!-- Both jobs run every minute in the core crontab.xml -->
+            <argument name="cronIntervalSeconds" xsi:type="number">60</argument>
+        </arguments>
+    </type>
+    <type name="Orangecat\IndexerBoost\Model\Doctor\Check\ReindexRegressionCheck">
+        <arguments>
+            <!-- Successful full reindexes needed before the last one (keep in line with RunStatsReader previousRuns) -->
+            <argument name="requiredPreviousRuns" xsi:type="number">5</argument>
+            <!-- warn when the last run takes more than ratio x the median and more than minSeconds -->
+            <argument name="ratio" xsi:type="number">2</argument>
+            <argument name="minSeconds" xsi:type="number">60</argument>
+        </arguments>
+    </type>
+    <type name="Orangecat\IndexerBoost\Model\Repair\StuckIndexerDetector">
+        <arguments>
+            <!-- Raw status "working" for longer than this is a stuck candidate -->
+            <argument name="stuckAfterMinutes" xsi:type="number">120</argument>
+            <!--
+                Tables (or table prefixes, without the DB prefix) that the full reindex of each indexer writes.
+                A running INSERT/UPDATE/DELETE/ALTER/... on them means the reindex is alive. Indexers not listed
+                use their own id (e.g. customer_grid matches customer_grid_flat). catalogsearch_fulltext writes to
+                the search engine, so its activity cannot be seen here.
+            -->
+            <argument name="indexTables" xsi:type="array">
+                <item name="catalog_category_product" xsi:type="array">
+                    <item name="t0" xsi:type="string">catalog_category_product_index</item>
+                </item>
+                <item name="catalog_product_category" xsi:type="array">
+                    <item name="t0" xsi:type="string">catalog_category_product_index</item>
+                </item>
+                <item name="catalog_product_attribute" xsi:type="array">
+                    <item name="t0" xsi:type="string">catalog_product_index_eav</item>
+                </item>
+                <item name="catalog_product_price" xsi:type="array">
+                    <item name="t0" xsi:type="string">catalog_product_index_price</item>
+                    <item name="t1" xsi:type="string">catalog_product_index_tier_price</item>
+                    <item name="t2" xsi:type="string">catalog_product_index_website</item>
+                </item>
+                <item name="cataloginventory_stock" xsi:type="array">
+                    <item name="t0" xsi:type="string">cataloginventory_stock_status</item>
+                </item>
+                <item name="catalogrule_rule" xsi:type="array">
+                    <item name="t0" xsi:type="string">catalogrule_product</item>
+                    <item name="t1" xsi:type="string">catalogrule_group_website</item>
+                </item>
+                <item name="catalogrule_product" xsi:type="array">
+                    <item name="t0" xsi:type="string">catalogrule_product</item>
+                    <item name="t1" xsi:type="string">catalogrule_group_website</item>
+                </item>
+                <item name="inventory" xsi:type="array">
+                    <item name="t0" xsi:type="string">inventory_stock_</item>
+                </item>
+                <item name="sales_order_data_exporter" xsi:type="array">
+                    <item name="t0" xsi:type="string">sales_data_exporter_orders</item>
+                </item>
+                <item name="sales_order_status_data_exporter" xsi:type="array">
+                    <item name="t0" xsi:type="string">sales_data_exporter_order_statuses</item>
+                </item>
+                <item name="store_data_exporter" xsi:type="array">
+                    <item name="t0" xsi:type="string">stores_data_exporter</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Orangecat\IndexerBoost\Model\Monitor\RunRecorder">
+        <arguments>
+            <argument name="minChangesSeconds" xsi:type="number">1</argument>
+        </arguments>
+    </type>
+    <type name="Orangecat\IndexerBoost\Model\Monitor\RunStatsReader">
+        <arguments>
+            <argument name="previousRuns" xsi:type="number">5</argument>
+        </arguments>
+    </type>
+    <type name="Magento\Indexer\Model\Indexer">
+        <plugin name="orangecat_indexer_boost_record_full_reindex"
+                type="Orangecat\IndexerBoost\Plugin\Indexer\RecordFullReindexPlugin"/>
+    </type>
+    <type name="Magento\Framework\Mview\ViewInterface">
+        <plugin name="orangecat_indexer_boost_record_view_update"
+                type="Orangecat\IndexerBoost\Plugin\Mview\RecordViewUpdatePlugin" sortOrder="100"/>
+    </type>
+</config>

@@ -1,0 +1,17 @@
+parameters:
+    level: 8
+    phpVersion: 80200
+    paths:
+        - .
+    excludePaths:
+        - docs/*
+    scanDirectories:
+        - ../../../../generated/code
+        - ../../../../dev/tests/integration/framework
+    bootstrapFiles:
+        - ../../../../dev/tests/unit/framework/bootstrap.php
+    ignoreErrors:
+        # DataFixture and Config are declared IS_REPEATABLE in the integration framework; PHPStan 1.9 still reports the
+        # repetition
+        - message: '#Attribute class Magento\\TestFramework\\Fixture\\(DataFixture|Config) is not repeatable#'
+          path: Test/Integration/*

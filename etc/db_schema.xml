@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Orangecat. All rights reserved.
+ */
+-->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="orangecat_indexer_boost_run_log" resource="default" engine="innodb"
+           comment="Indexer Boost passive log of real reindex runs">
+        <column xsi:type="int" name="run_id" unsigned="true" nullable="false" identity="true" comment="Run ID"/>
+        <column xsi:type="varchar" name="indexer_id" nullable="false" length="255" comment="Indexer or mview ID"/>
+        <column xsi:type="varchar" name="kind" nullable="false" length="16" comment="full or changes"/>
+        <column xsi:type="datetime" name="started_at" nullable="false" comment="Start (UTC)"/>
+        <column xsi:type="decimal" name="duration_s" scale="3" precision="12" unsigned="true" nullable="false"
+                default="0" comment="Duration in seconds"/>
+        <column xsi:type="smallint" name="failed" unsigned="true" nullable="false" default="0"
+                comment="Whether the run failed"/>
+        <column xsi:type="text" name="error" nullable="true" comment="Error of a failed run"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="run_id"/>
+        </constraint>
+        <index referenceId="ORANGECAT_INDEXER_BOOST_RUN_LOG_INDEXER_ID_KIND_STARTED_AT" indexType="btree">
+            <column name="indexer_id"/>
+            <column name="kind"/>
+            <column name="started_at"/>
+        </index>
+        <index referenceId="ORANGECAT_INDEXER_BOOST_RUN_LOG_STARTED_AT" indexType="btree">
+            <column name="started_at"/>
+        </index>
+    </table>
+</schema>

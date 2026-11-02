@@ -1,0 +1,130 @@
+<?php
+/**
+ * Copyright © Orangecat. All rights reserved.
+ */
+
+use Magento\Backend\Block\Template;
+use Magento\Framework\Escaper;
+use Orangecat\IndexerBoost\Model\Doctor\CheckResult;
+use Orangecat\IndexerBoost\ViewModel\DoctorPage;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var DoctorPage $viewModel */
+$viewModel = $block->getData('view_model');
+
+// Admin grid severity styles
+$severityClass = [
+    'critical' => 'grid-severity-critical',
+    'warn' => 'grid-severity-major',
+    'info' => 'grid-severity-minor',
+    'ok' => 'grid-severity-notice',
+];
+
+/**
+ * @param CheckResult[] $results
+ */
+$renderFindings = static function (array $results) use ($escaper, $viewModel, $severityClass): string {
+    $summary = [];
+    foreach ($viewModel->getSummary($results) as $severity => $count) {
+        $summary[] = $count . ' ' . $severity;
+    }
+    $html = '<p>' . $escaper->escapeHtml(implode(', ', $summary)) . '</p>'
+        . '<table class="data-grid"><thead><tr>'
+        . '<th class="data-grid-th">' . $escaper->escapeHtml(__('Severity')) . '</th>'
+        . '<th class="data-grid-th">' . $escaper->escapeHtml(__('Check')) . '</th>'
+        . '<th class="data-grid-th">' . $escaper->escapeHtml(__('Finding')) . '</th>'
+        . '<th class="data-grid-th">' . $escaper->escapeHtml(__('Recommendation / Fix')) . '</th>'
+        . '</tr></thead><tbody>';
+    foreach ($results as $result) {
+        $finding = $result->toArray();
+        $html .= '<tr>'
+            . '<td><span class="' . $escaper->escapeHtmlAttr($severityClass[$finding['severity']] ?? '') . '"><span>'
+            . $escaper->escapeHtml(strtoupper($finding['severity'])) . '</span></span></td>'
+            . '<td><code>' . $escaper->escapeHtml($finding['code']) . '</code></td>'
+            . '<td>' . $escaper->escapeHtml($finding['message']) . '</td>'
+            . '<td>' . $escaper->escapeHtml($finding['recommendation'])
+            . ($finding['fix'] !== '' ? '<br><code>' . $escaper->escapeHtml($finding['fix']) . '</code>' : '')
+            . '</td></tr>';
+    }
+    return $html . '</tbody></table>';
+};
+
+$savedAt = $viewModel->getSavedAt();
+$runStats = $viewModel->getRunStats();
+?>
+<div class="message message-notice">
+    <div><?= $escaper->escapeHtml(__(
+        'Read-only page: fixes are launched from the command line, e.g. bin/magento indexer-boost:doctor --repair.'
+    )) ?></div>
+</div>
+
+<section class="admin__page-section">
+    <div class="admin__page-section-title">
+        <strong class="title"><?= $escaper->escapeHtml(__('Light checks (run now)')) ?></strong>
+    </div>
+    <?= /* @noEscape */ $renderFindings($viewModel->getLiveResults()) ?>
+</section>
+
+<section class="admin__page-section">
+    <div class="admin__page-section-title">
+        <strong class="title"><?= $escaper->escapeHtml(__('Other checks (last full CLI run)')) ?></strong>
+    </div>
+    <?php if ($savedAt === null): ?>
+        <div class="message message-warning">
+            <div><?= $escaper->escapeHtml(__(
+                'No saved report. Heavy checks only run from the command line: bin/magento indexer-boost:doctor'
+            )) ?></div>
+        </div>
+    <?php else: ?>
+        <p><?= $escaper->escapeHtml(__(
+            'Report of %1. Run bin/magento indexer-boost:doctor to refresh it.',
+            $savedAt
+        )) ?></p>
+        <?= /* @noEscape */ $renderFindings($viewModel->getSavedResults()) ?>
+    <?php endif; ?>
+</section>
+
+<section class="admin__page-section">
+    <div class="admin__page-section-title">
+        <strong class="title"><?= $escaper->escapeHtml(__('Passive run log')) ?></strong>
+    </div>
+    <?php if (!$runStats): ?>
+        <p><?= $escaper->escapeHtml(__('No reindex recorded yet.')) ?></p>
+    <?php else: ?>
+        <table class="data-grid">
+            <thead>
+            <tr>
+                <th class="data-grid-th"><?= $escaper->escapeHtml(__('Indexer')) ?></th>
+                <th class="data-grid-th"><?= $escaper->escapeHtml(__('Last full reindex (UTC)')) ?></th>
+                <th class="data-grid-th"><?= $escaper->escapeHtml(__('Duration (s)')) ?></th>
+                <th class="data-grid-th"><?= $escaper->escapeHtml(__('Usual duration (s)')) ?></th>
+                <th class="data-grid-th"><?= $escaper->escapeHtml(__('Full runs (failed)')) ?></th>
+                <th class="data-grid-th"><?= $escaper->escapeHtml(__('Changelog runs (failed)')) ?></th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($runStats as $stats): ?>
+                <tr>
+                    <td><code><?= $escaper->escapeHtml($stats->indexerId) ?></code></td>
+                    <td><?= $escaper->escapeHtml($stats->lastFullStartedAt ?? '—') ?></td>
+                    <td><?= $escaper->escapeHtml($stats->lastFullDuration ?? '—') ?></td>
+                    <td>
+                        <?php if ($stats->previousFullMedian === null): ?>
+                            —
+                        <?php else: ?>
+                            <?= $escaper->escapeHtml(__(
+                                '%1 (median of %2)',
+                                $stats->previousFullMedian,
+                                $stats->previousFullRuns
+                            )) ?>
+                        <?php endif; ?>
+                    </td>
+                    <td><?= (int)$stats->fullRuns ?> (<?= (int)$stats->fullFailures ?>)</td>
+                    <td><?= (int)$stats->changesRuns ?> (<?= (int)$stats->changesFailures ?>)</td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
+</section>

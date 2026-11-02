@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Orangecat. All rights reserved.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <indexer_boost>
+            <monitor>
+                <enabled>1</enabled>
+                <retention_days>90</retention_days>
+            </monitor>
+        </indexer_boost>
+    </default>
+</config>

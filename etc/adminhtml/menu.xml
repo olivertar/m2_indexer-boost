@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Orangecat. All rights reserved.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Orangecat_IndexerBoost::doctor" title="Indexer Boost" translate="title" module="Orangecat_IndexerBoost" sortOrder="90" parent="Magento_Backend::system_tools" action="indexerboost/doctor/index" resource="Orangecat_IndexerBoost::doctor"/>
+    </menu>
+</config>

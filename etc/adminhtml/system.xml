@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Orangecat. All rights reserved.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="indexer_boost" translate="label" sortOrder="910" showInDefault="1">
+            <class>separator-top</class>
+            <label>Indexer Boost</label>
+            <tab>advanced</tab>
+            <resource>Orangecat_IndexerBoost::config</resource>
+            <group id="monitor" translate="label comment" sortOrder="10" showInDefault="1">
+                <label>Passive Reindex Monitor</label>
+                <comment>Records the duration of real full reindexes and changelog runs (1 s or longer, failures always) for the REINDEX_REGRESSION and REINDEX_CHURN checks and the System > Tools > Indexer Boost page.</comment>
+                <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" canRestore="1">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="retention_days" translate="label comment" type="text" sortOrder="20" showInDefault="1" canRestore="1">
+                    <label>Keep Runs For (Days)</label>
+                    <comment>Older runs are deleted by a daily cron job.</comment>
+                    <validate>required-entry validate-digits validate-greater-than-zero</validate>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

@@ -1,0 +1,20 @@
+{
+    "orangecat_indexer_boost_run_log": {
+        "column": {
+            "run_id": true,
+            "indexer_id": true,
+            "kind": true,
+            "started_at": true,
+            "duration_s": true,
+            "failed": true,
+            "error": true
+        },
+        "index": {
+            "ORANGECAT_INDEXER_BOOST_RUN_LOG_INDEXER_ID_KIND_STARTED_AT": true,
+            "ORANGECAT_INDEXER_BOOST_RUN_LOG_STARTED_AT": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    }
+}

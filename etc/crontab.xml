@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Orangecat. All rights reserved.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="default">
+        <job name="orangecat_indexer_boost_run_log_cleanup" instance="Orangecat\IndexerBoost\Cron\CleanupRunLog" method="execute">
+            <schedule>30 3 * * *</schedule>
+        </job>
+    </group>
+</config>

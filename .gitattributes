@@ -1,0 +1,4 @@
+/Test export-ignore
+/docs export-ignore
+/phpstan.neon export-ignore
+/.gitattributes export-ignore

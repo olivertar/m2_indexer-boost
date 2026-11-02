@@ -1,0 +1,26 @@
+{
+    "name": "orangecat/module-indexer-boost",
+    "description": "Indexing diagnostics, passive reindex monitoring and optimized indexers for Magento 2",
+    "type": "magento2-module",
+    "license": "MIT",
+    "require": {
+        "php": "~8.2.0||~8.3.0||~8.4.0||~8.5.0",
+        "magento/framework": "*",
+        "magento/module-backend": "*",
+        "magento/module-catalog": "*",
+        "magento/module-catalog-rule": "*",
+        "magento/module-config": "*",
+        "magento/module-cron": "*",
+        "magento/module-customer": "*",
+        "magento/module-indexer": "*",
+        "magento/module-store": "*"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Orangecat\\IndexerBoost\\": ""
+        }
+    }
+}
