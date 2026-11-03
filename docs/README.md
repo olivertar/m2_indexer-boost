@@ -27,7 +27,6 @@ Module-level details stay next to the code: each module has its own `README.md`,
 
 - [Landing page](landing.html) — product page in English; published as a private artifact. Open it next to
   `images/` so the screenshots load.
-- [LinkedIn article](linkedin-article.md) — English draft, written in the author's voice.
 - [Benchmark reports](benchmarks/) — the raw measurements behind every number in these documents.
 - `images/` — screenshots taken on the development store on 2026-11-02 (2 040 products, so durations there are
   sub-second) and the benchmark chart.
